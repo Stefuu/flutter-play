@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -11,7 +12,13 @@ Future<String> getFruitResponse() async {
 
 Future<List<Fruit>> getFruitList() async {
   var response = await getFruitResponse();
-  var resApi = json.decode(response);
-  var fruitList = List<Fruit>.from(resApi);
+  List<dynamic> resApi = json.decode(response);
+
+  Iterable<Fruit> iFruit = resApi.map<Fruit>(
+      (fruitJson) => Fruit.fromJson(fruitJson as Map<String, dynamic>));
+
+  var fruitList = List<Fruit>.from(iFruit);
+
+  print(fruitList);
   return fruitList;
 }
