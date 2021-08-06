@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pocblah/services/api.dart';
 
 import 'components/fruit_item.dart';
 import 'components/fruit_list.dart';
@@ -11,6 +12,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    var fruitList = getFruitResponse();
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
