@@ -12,8 +12,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    var fruitList = getFruitList();
-
+    var fruitListFuture = getFruitList();
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -25,11 +24,25 @@ class MyApp extends StatelessWidget {
             child: Text("App"),
           ),
         ),
-        body: FruitList(
-          children: [
-            FruitItem(name: "1"),
-            FruitItem(name: "2"),
-          ],
+        body: FutureBuilder(
+          future: fruitListFuture,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Center(
+                child: Text("Lista Cheia"),
+              );
+              // Iterable<FruitItem> iFruits =
+              //     snapshot.data?.map((fruit) => FruitItem(name: fruit.name));
+
+              // return FruitList(
+              //   children: List<FruitItem>.from(iFruits),
+              // );
+            } else {
+              return Center(
+                child: Text("Lista Vazia"),
+              );
+            }
+          },
         ),
       ),
     );
