@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -19,6 +18,5 @@ Future<List<Fruit>> getFruitList() async {
 
   var fruitList = List<Fruit>.from(iFruit);
 
-  print(fruitList);
   return fruitList;
 }

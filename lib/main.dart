@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pocblah/models/fruit.dart';
 import 'package:pocblah/services/api.dart';
 
 import 'components/fruit_item.dart';
@@ -24,22 +25,27 @@ class MyApp extends StatelessWidget {
             child: Text("App"),
           ),
         ),
-        body: FutureBuilder(
+        body: FutureBuilder<List<Fruit>>(
           future: fruitListFuture,
+          initialData: [],
           builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Center(
-                child: Text("Lista Cheia"),
-              );
-              // Iterable<FruitItem> iFruits =
-              //     snapshot.data?.map((fruit) => FruitItem(name: fruit.name));
+            if (snapshot.hasData && snapshot.data != null) {
+              Iterable<FruitItem> iFruits =
+                  snapshot.data!.map((fruit) => FruitItem(name: fruit.name));
 
-              // return FruitList(
-              //   children: List<FruitItem>.from(iFruits),
-              // );
+              return Center(
+                child: FruitList(
+                  children: List<FruitItem>.from(iFruits),
+                ),
+              );
+            }
+            if (snapshot.hasError) {
+              return Center(
+                child: Text("Erro: ${snapshot.error}"),
+              );
             } else {
               return Center(
-                child: Text("Lista Vazia"),
+                child: CircularProgressIndicator(),
               );
             }
           },
