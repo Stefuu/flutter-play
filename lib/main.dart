@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pocblah/blocs/fruit.dart';
 import 'package:pocblah/models/fruit.dart';
 import 'package:pocblah/services/api.dart';
 
@@ -9,27 +10,27 @@ void main() {
   runApp(MyApp());
 }
 
-class FruitContainer extends StatefulWidget {
+class StatefulFruitContainer extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return FruitContainerState();
+    return StatefulFruitContainerState();
   }
 }
 
-class FruitContainerState extends State<FruitContainer> {
-  Future<List<Fruit>>? fruitListFuture;
+class StatefulFruitContainerState extends State<StatefulFruitContainer> {
+  FruitBloc? bloc;
 
   @override
   void initState() {
     super.initState();
-    fruitListFuture = getFruitList();
+    bloc = FruitBloc();
+    // bloc!.getFruitList();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Fruit>>(
-      future: fruitListFuture,
-      initialData: [],
+      future: bloc!.fruitListFuture,
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data != null) {
           Iterable<FruitItem> iFruits =
@@ -47,8 +48,12 @@ class FruitContainerState extends State<FruitContainer> {
           );
         } else {
           return Center(
-            child: CircularProgressIndicator(),
-          );
+              child: Column(children: [
+            CircularProgressIndicator(),
+            ElevatedButton(
+                onPressed: () => this.bloc!.getFruitList(),
+                child: Text("Carrega ae")),
+          ]));
         }
       },
     );
@@ -70,7 +75,7 @@ class MyApp extends StatelessWidget {
               child: Text("App"),
             ),
           ),
-          body: FruitContainer()),
+          body: StatefulFruitContainer()),
     );
   }
 }

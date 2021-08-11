@@ -18,6 +18,6 @@ Future<List<Fruit>> getFruitList() async {
 
   var fruitList = List<Fruit>.from(iFruit);
 
-  Future.delayed(Duration(seconds: 2));
+  await Future.delayed(Duration(seconds: 2));
   return fruitList;
 }
