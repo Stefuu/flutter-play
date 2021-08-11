@@ -11,6 +11,62 @@ void main() {
       create: (_) => FruitBloc(), child: MyApp()));
 }
 
+class FruitStreamContainer extends StatelessWidget {
+  const FruitStreamContainer({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<FruitBloc>(
+      builder: (context, bloc, _) {
+        return StreamBuilder<List<Fruit>>(
+          stream: bloc.fruitStream,
+          builder: (context, snapshot) {
+            if (snapshot.hasData && snapshot.data != null) {
+              Iterable<FruitItem> iFruits =
+                  snapshot.data!.map((fruit) => FruitItem(name: fruit.name));
+
+              return Center(
+                child: Column(
+                  children: [
+                    FruitList(
+                      children: List<FruitItem>.from(iFruits),
+                    ),
+                    ElevatedButton(
+                        onPressed: () => bloc.getFruitWithStream(),
+                        child: Text("Carrega ae")),
+                    ElevatedButton(
+                        onPressed: () => bloc.loadSecondList(),
+                        child: Text("Carrega ae de novo")),
+                  ],
+                ),
+              );
+            }
+            if (snapshot.hasError) {
+              return Center(
+                child: Text("Erro: ${snapshot.error}"),
+              );
+            } else {
+              return Center(
+                child: Column(
+                  children: [
+                    CircularProgressIndicator(),
+                    ElevatedButton(
+                        onPressed: () => bloc.getFruitWithStream(),
+                        child: Text("Carrega ae")),
+                    ElevatedButton(
+                        onPressed: () => bloc.loadSecondList(),
+                        child: Text("Carrega ae de novo")),
+                  ],
+                ),
+              );
+            }
+          },
+        );
+      },
+    );
+  }
+}
+
 class StatelessFruitContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -111,7 +167,7 @@ class MyApp extends StatelessWidget {
               child: Text("App"),
             ),
           ),
-          body: StatelessFruitContainer()),
+          body: FruitStreamContainer()),
     );
   }
 }
