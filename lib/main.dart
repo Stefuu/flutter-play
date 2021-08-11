@@ -1,13 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:pocblah/blocs/fruit.dart';
 import 'package:pocblah/models/fruit.dart';
-import 'package:pocblah/services/api.dart';
+import 'package:provider/provider.dart';
 
 import 'components/fruit_item.dart';
 import 'components/fruit_list.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(ChangeNotifierProvider<FruitBloc>(
+      create: (_) => FruitBloc(), child: MyApp()));
+}
+
+class StatelessFruitContainer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<FruitBloc>(
+        builder: (ctx, bloc, _) => FutureBuilder<List<Fruit>>(
+              future: bloc.fruitListFuture,
+              builder: (context, snapshot) {
+                if (snapshot.hasData && snapshot.data != null) {
+                  Iterable<FruitItem> iFruits = snapshot.data!
+                      .map((fruit) => FruitItem(name: fruit.name));
+
+                  return Center(
+                    child: FruitList(
+                      children: List<FruitItem>.from(iFruits),
+                    ),
+                  );
+                }
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text("Erro: ${snapshot.error}"),
+                  );
+                } else {
+                  return Center(
+                      child: Column(children: [
+                    CircularProgressIndicator(),
+                    ElevatedButton(
+                        onPressed: () => bloc.getFruitList(),
+                        child: Text("Carrega ae")),
+                  ]));
+                }
+              },
+            ));
+  }
 }
 
 class StatefulFruitContainer extends StatefulWidget {
@@ -75,7 +111,7 @@ class MyApp extends StatelessWidget {
               child: Text("App"),
             ),
           ),
-          body: StatefulFruitContainer()),
+          body: StatelessFruitContainer()),
     );
   }
 }
